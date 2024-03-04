@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pipeline-runner"
+version = "0.1.0-dev"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+description = "A lightweight CI pipeline execution engine."
+
+[project.scripts]
+pipeline-runner = "pipeline_runner.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
