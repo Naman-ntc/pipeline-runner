@@ -1,0 +1,6 @@
+{
+  "id": "run-001",
+  "pipeline": "deploy",
+  "status": "pending",
+  "trigger": "manual"
+}

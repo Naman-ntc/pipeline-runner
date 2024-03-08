@@ -1,0 +1,13 @@
+name: deploy-prod
+owner: platform-team
+steps:
+  - id: build
+    name: build
+  - id: test
+    name: test
+    depends_on:
+      - build
+  - id: deploy
+    name: deploy
+    depends_on:
+      - test
