@@ -17,7 +17,11 @@ class BaseModel:
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize model to dictionary."""
-        return asdict(self)
+        raw = asdict(self)
+        return {
+            k: v.isoformat() if isinstance(v, datetime) else v
+            for k, v in raw.items()
+        }
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "BaseModel":
