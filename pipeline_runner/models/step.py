@@ -19,6 +19,8 @@ class Step:
 
     def is_ready(self, completed_steps: Set[str]) -> bool:
         """Check whether all dependencies have completed."""
+        if not self.depends_on:
+            return True
         return all(dep in completed_steps for dep in self.depends_on)
 
     def is_terminal(self) -> bool:
