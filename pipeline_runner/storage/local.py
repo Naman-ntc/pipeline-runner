@@ -24,6 +24,7 @@ class LocalStorage(StorageBackend):
 
     def put(self, key: str, content: bytes) -> None:
         path = self._key_to_path(key)
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content)
 
     def delete(self, key: str) -> None:
