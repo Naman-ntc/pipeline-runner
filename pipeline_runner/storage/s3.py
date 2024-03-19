@@ -17,7 +17,7 @@ class S3Storage(StorageBackend):
         region: Optional[str] = None,
     ) -> None:
         self.bucket = bucket
-        self.prefix = prefix
+        self.prefix = prefix.rstrip("/")
         self.region = region
         self._client = None
 
