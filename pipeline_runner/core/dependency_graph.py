@@ -1,6 +1,7 @@
 """Dependency graph for tracking relationships between pipeline steps."""
 
-from typing import Dict, Set
+from collections import deque
+from typing import Dict, List, Set
 
 
 class DependencyGraph:
@@ -11,14 +12,12 @@ class DependencyGraph:
         self._edges: Dict[str, Set[str]] = {}
 
     def add_node(self, name: str) -> None:
-        """Add a node to the graph."""
         if name in self._nodes:
             raise ValueError(f"Node '{name}' already exists")
         self._nodes.add(name)
         self._edges[name] = set()
 
     def add_edge(self, from_node: str, to_node: str) -> None:
-        """Add a directed edge indicating from_node depends on to_node."""
         if from_node not in self._nodes:
             raise ValueError(f"Node '{from_node}' not in graph")
         if to_node not in self._nodes:
@@ -30,7 +29,6 @@ class DependencyGraph:
         self._edges[from_node].add(to_node)
 
     def remove_node(self, name: str) -> None:
-        """Remove a node and all associated edges."""
         if name not in self._nodes:
             raise ValueError(f"Node '{name}' not in graph")
         self._nodes.discard(name)
@@ -38,12 +36,64 @@ class DependencyGraph:
         for node in self._edges:
             self._edges[node].discard(name)
 
+    def topological_sort(self) -> List[str]:
+        """Return nodes in topological order using Kahn's algorithm.
+
+        Raises ValueError if the graph contains a cycle.
+        """
+        in_degree: Dict[str, int] = {}
+        for node in self._nodes:
+            for dep in self._edges[node]:
+                in_degree[dep] = in_degree.get(dep, 0) + 1
+
+        # BUG: nodes with zero in-degree are absent from in_degree dict,
+        # so `node in in_degree` is False and they never enter the queue.
+        queue = deque(
+            node for node in self._nodes
+            if node in in_degree and in_degree[node] == 0
+        )
+        result: List[str] = []
+        while queue:
+            current = queue.popleft()
+            result.append(current)
+            for neighbor in self._edges.get(current, set()):
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+
+        if len(result) != len(self._nodes):
+            raise ValueError("Graph contains a cycle")
+        return result
+
+    def detect_cycles(self) -> List[List[str]]:
+        """Detect cycles in the graph using DFS."""
+        visited: Set[str] = set()
+        rec_stack: Set[str] = set()
+        cycles: List[List[str]] = []
+        path: List[str] = []
+
+        def _dfs(node: str) -> None:
+            visited.add(node)
+            rec_stack.add(node)
+            path.append(node)
+            for neighbor in self._edges.get(node, set()):
+                if neighbor not in visited:
+                    _dfs(neighbor)
+                elif neighbor in rec_stack:
+                    cycle_start = path.index(neighbor)
+                    cycles.append(path[cycle_start:] + [neighbor])
+            path.pop()
+            rec_stack.discard(node)
+
+        for node in self._nodes:
+            if node not in visited:
+                _dfs(node)
+        return cycles
+
     @property
     def nodes(self) -> Set[str]:
-        """Return a copy of the node set."""
         return set(self._nodes)
 
     @property
     def edges(self) -> Dict[str, Set[str]]:
-        """Return a deep copy of the edge mapping."""
         return {k: set(v) for k, v in self._edges.items()}
