@@ -46,11 +46,11 @@ class DependencyGraph:
             for dep in self._edges[node]:
                 in_degree[dep] = in_degree.get(dep, 0) + 1
 
-        # BUG: nodes with zero in-degree are absent from in_degree dict,
-        # so `node in in_degree` is False and they never enter the queue.
+        # FIX: use .get(node, 0) so nodes absent from in_degree (zero
+        # incoming edges) are correctly seeded into the queue.
         queue = deque(
             node for node in self._nodes
-            if node in in_degree and in_degree[node] == 0
+            if in_degree.get(node, 0) == 0
         )
         result: List[str] = []
         while queue:
