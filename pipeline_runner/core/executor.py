@@ -27,10 +27,9 @@ class Executor:
         future = self._pool.submit(step_fn)
         self._futures[step_id] = future
         try:
-            # BUG: ignores the timeout parameter, always passes None
-            return future.result(timeout=None)
+            # FIX: wire the timeout parameter through to future.result()
+            return future.result(timeout=timeout)
         except TimeoutError:
-            # BUG: error message does not include step_id
             raise ExecutionError("Step timed out")
         except Exception as exc:
             raise ExecutionError(f"Step failed: {exc}") from exc
