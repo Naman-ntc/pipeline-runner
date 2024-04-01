@@ -53,11 +53,19 @@ class Pipeline:
     def validate(self) -> List[str]:
         """Validate the pipeline configuration. Returns a list of warnings.
 
-        BUG: does not check for dependency cycles.
+        Checks for empty pipelines and missing dependencies, but still does
+        NOT check for dependency cycles.
         """
         warnings: List[str] = []
         if not self._steps:
             warnings.append("Pipeline has no steps")
+            return warnings
+        for step_id, deps in self._deps.items():
+            for dep in deps:
+                if dep not in self._steps:
+                    warnings.append(
+                        f"Step '{step_id}' depends on unknown step '{dep}'"
+                    )
         return warnings
 
     def run(self) -> Dict[str, Any]:
