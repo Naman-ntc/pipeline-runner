@@ -21,10 +21,15 @@ class Registry:
             self._registry[name] = component
 
     def get(self, name: str) -> Any:
-        """Retrieve a component by name."""
+        """Retrieve a component by name.
+
+        Raises KeyError if the component is not registered.
+        """
         with self._lock:
-            # BUG: returns None for missing names instead of raising KeyError
-            return self._registry.get(name)
+            # FIX: raise KeyError for missing names instead of returning None
+            if name not in self._registry:
+                raise KeyError(name)
+            return self._registry[name]
 
     def list_registered(self) -> List[str]:
         """Return a list of all registered component names."""
