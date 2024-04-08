@@ -37,6 +37,8 @@ class CORSMiddleware:
                 headers = list(message.get("headers", []))
                 origin = self.allowed_origins[0]
                 headers.append((b"access-control-allow-origin", origin.encode()))
+                headers.append((b"access-control-allow-methods", b"GET,POST,PUT,DELETE,OPTIONS"))
+                headers.append((b"access-control-allow-headers", b"Content-Type,Authorization"))
                 message["headers"] = headers
             await send(message)
 
