@@ -26,8 +26,14 @@ class WorkerRunner:
     async def stop(self):
         logger.info("Stopping worker runner")
         self._running = False
-        # BUG: sets _running to False but never cancels or awaits pending tasks,
-        # so in-flight coroutines keep running until the event loop shuts down.
+        for task in self._tasks:
+            task.cancel()
+        results = await asyncio.gather(*self._tasks, return_exceptions=True)
+        for i, result in enumerate(results):
+            if isinstance(result, Exception) and not isinstance(result, asyncio.CancelledError):
+                logger.warning("Task %d raised during shutdown: %s", i, result)
+        self._tasks.clear()
+        logger.info("All worker tasks cancelled and cleaned up")
 
     async def _poll_loop(self, worker_id: int):
         while self._running:
@@ -35,6 +41,9 @@ class WorkerRunner:
                 job = await self._fetch_job()
                 if job:
                     await self.process_job(job, worker_id)
+            except asyncio.CancelledError:
+                logger.info("Worker %d cancelled", worker_id)
+                raise
             except Exception as exc:
                 logger.error("Worker %d encountered error: %s", worker_id, exc)
             await asyncio.sleep(0.1)
