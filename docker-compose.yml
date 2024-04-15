@@ -1,0 +1,7 @@
+services:
+  app:
+    image: pipeline-runner:dev
+    ports:
+      - "8000:8000"
+    environment:
+      PIPELINE_DEBUG: "true"
