@@ -43,10 +43,11 @@ class HeartbeatEmitter:
 
     def _run_loop(self):
         while self._running:
+            start = time.monotonic()
             try:
                 self.emit()
             except Exception as exc:
                 logger.error("Heartbeat emission failed: %s", exc)
-            # BUG: always sleeps the full interval regardless of how long emit() took,
-            # causing the actual period to drift longer than self.interval.
-            time.sleep(self.interval)
+            elapsed = time.monotonic() - start
+            remaining = max(0, self.interval - elapsed)
+            time.sleep(remaining)
