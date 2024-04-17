@@ -1,0 +1,12 @@
+name: complex
+steps:
+  - id: build
+    command: make build
+    timeout: 600
+  - id: test
+    command: make test
+    depends_on: [build]
+  - id: package
+    command: make package
+    depends_on: [test]
+    timeout: 300

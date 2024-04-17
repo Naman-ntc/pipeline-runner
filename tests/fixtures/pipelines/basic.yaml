@@ -1,0 +1,4 @@
+name: basic
+steps:
+  - id: echo
+    command: echo hello

@@ -1,0 +1,5 @@
+name: failing
+steps:
+  - id: fail
+    command: exit 1
+    timeout: 10
