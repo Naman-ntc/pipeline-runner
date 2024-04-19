@@ -37,6 +37,8 @@ def verify_token(token: str) -> TokenPayload | None:
     payload = _TOKEN_STORE.get(jti)
     if payload is None:
         return None
+    if payload.exp < time.time():
+        return None
     return payload
 
 
