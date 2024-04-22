@@ -22,7 +22,7 @@ class NotificationDispatcher:
         for name in channel_names:
             channel = self._channels.get(name)
             if channel is None:
-                continue
+                raise ValueError(f"Unknown notification channel: {name}")
             try:
                 channel.send(message, **kwargs)
                 results[name] = True
