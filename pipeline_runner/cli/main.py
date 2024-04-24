@@ -25,8 +25,9 @@ def create_parser() -> argparse.ArgumentParser:
 
 
 def dispatch_command(args: argparse.Namespace):
-    # BUG: no check for missing subcommand — crashes with AttributeError
-    # when the user runs the CLI without specifying a subcommand.
+    if not hasattr(args, "func"):
+        print("Error: no subcommand specified. Use --help for usage.", file=sys.stderr)
+        sys.exit(1)
     args.func(args)
 
 
