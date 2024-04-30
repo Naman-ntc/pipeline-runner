@@ -17,9 +17,10 @@ class PluginLoader:
         if not self.plugin_dir.is_dir():
             logger.warning("Plugin directory not found: %s", self.plugin_dir)
             return []
-        # BUG: includes __init__.py and other dunder files, which causes
-        # load errors when they're treated as standalone plugins.
-        found = [p.stem for p in self.plugin_dir.glob("*.py")]
+        found = [
+            p.stem for p in self.plugin_dir.glob("*.py")
+            if not p.name.startswith("_")
+        ]
         logger.info("Discovered %d plugin candidates: %s", len(found), found)
         return found
 
