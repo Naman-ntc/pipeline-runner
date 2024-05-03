@@ -36,6 +36,8 @@ class BaseModel:
         for name, val in self.__dict__.items():
             if val is None:
                 errors.append(f"Field '{name}' must not be None")
+            elif isinstance(val, str) and not val.strip():
+                errors.append(f"Field '{name}' must not be empty")
         return errors
 
     def touch(self) -> None:
