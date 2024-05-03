@@ -1,4 +1,5 @@
 import json
+import time
 import urllib.request
 import urllib.error
 
@@ -37,5 +38,12 @@ class SlackNotifier:
             data=data,
             headers={"Content-Type": "application/json"},
         )
-        urllib.request.urlopen(req)
-        return True
+        last_err: Exception | None = None
+        for attempt in range(3):
+            try:
+                urllib.request.urlopen(req)
+                return True
+            except (urllib.error.URLError, OSError) as exc:
+                last_err = exc
+                time.sleep(2 ** attempt)
+        raise ConnectionError(f"Failed after 3 attempts: {last_err}")

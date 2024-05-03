@@ -1,5 +1,6 @@
 import smtplib
 import re
+import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -29,7 +30,14 @@ class EmailNotifier:
             raise ValueError(f"Invalid recipient: {recipient}")
         msg = self.build_template(subject, body, html)
         msg["To"] = recipient
-        conn = smtplib.SMTP(self.smtp_host, self.smtp_port)
-        conn.sendmail(self.sender, [recipient], msg.as_string())
-        conn.quit()
-        return True
+        last_err: Exception | None = None
+        for attempt in range(3):
+            try:
+                conn = smtplib.SMTP(self.smtp_host, self.smtp_port)
+                conn.sendmail(self.sender, [recipient], msg.as_string())
+                conn.quit()
+                return True
+            except (smtplib.SMTPException, OSError) as exc:
+                last_err = exc
+                time.sleep(2 ** attempt)
+        raise ConnectionError(f"Failed after 3 attempts: {last_err}")
