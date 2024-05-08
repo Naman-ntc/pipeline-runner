@@ -27,12 +27,14 @@ class Executor:
         future = self._pool.submit(step_fn)
         self._futures[step_id] = future
         try:
-            # FIX: wire the timeout parameter through to future.result()
             return future.result(timeout=timeout)
         except TimeoutError:
-            raise ExecutionError("Step timed out")
+            # FIX: include step_id in the error message
+            raise ExecutionError(f"Step '{step_id}' timed out")
         except Exception as exc:
-            raise ExecutionError(f"Step failed: {exc}") from exc
+            raise ExecutionError(
+                f"Step '{step_id}' failed: {exc}"
+            ) from exc
 
     def execute_pipeline(
         self, steps: List[Tuple[str, Callable[[], Any], Optional[float]]]
@@ -50,7 +52,9 @@ class Executor:
             try:
                 results[step_id] = future.result()
             except Exception as exc:
-                raise ExecutionError(f"Step failed: {exc}") from exc
+                raise ExecutionError(
+                    f"Step '{step_id}' failed: {exc}"
+                ) from exc
         return results
 
     def shutdown(self, wait: bool = True) -> None:
