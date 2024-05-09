@@ -35,7 +35,7 @@ class S3Storage(StorageBackend):
             return f"{self.prefix}/{key}"
         return key
 
-    def get(self, key: str):
+    def get(self, key: str) -> bytes:
         from botocore.exceptions import ClientError
         client = self._get_client()
         try:
@@ -46,15 +46,15 @@ class S3Storage(StorageBackend):
                 raise FileNotFoundError(f"Key not found: {key}") from exc
             raise
 
-    def put(self, key: str, content: bytes):
+    def put(self, key: str, content: bytes) -> None:
         client = self._get_client()
         client.put_object(Bucket=self.bucket, Key=self._build_key(key), Body=content)
 
-    def delete(self, key: str):
+    def delete(self, key: str) -> None:
         client = self._get_client()
         client.delete_object(Bucket=self.bucket, Key=self._build_key(key))
 
-    def list_keys(self, prefix: str = ""):
+    def list_keys(self, prefix: str = "") -> Iterator[str]:
         client = self._get_client()
         full_prefix = self._build_key(prefix)
         paginator = client.get_paginator("list_objects_v2")
@@ -65,7 +65,7 @@ class S3Storage(StorageBackend):
                     raw_key = raw_key[len(self.prefix) + 1 :]
                 yield raw_key
 
-    def exists(self, key: str):
+    def exists(self, key: str) -> bool:
         from botocore.exceptions import ClientError
         client = self._get_client()
         try:
