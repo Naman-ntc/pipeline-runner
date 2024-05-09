@@ -2,7 +2,7 @@
 
 import logging
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List
 
 logger = logging.getLogger(__name__)
@@ -31,8 +31,8 @@ class Scheduler:
             "next_run": now if immediate else now + interval_seconds,
             "last_run": None,
             "run_count": 0,
-            # BUG: datetime.utcnow() is deprecated in Python 3.12+
-            "created_at": datetime.utcnow(),
+            # FIX: use timezone-aware UTC instead of deprecated utcnow()
+            "created_at": datetime.now(timezone.utc),
         }
 
     def unschedule(self, job_id: str) -> None:
