@@ -21,7 +21,7 @@ class WebhookDispatcher:
         expected = hmac.new(
             self.secret.encode(), payload, hashlib.sha256
         ).hexdigest()
-        return signature == expected
+        return hmac.compare_digest(signature, expected)
 
     def dispatch(self, event: str, data: dict[str, Any]) -> list[dict]:
         body = json.dumps({"event": event, "data": data}).encode()
