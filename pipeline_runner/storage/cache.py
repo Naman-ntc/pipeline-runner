@@ -26,7 +26,7 @@ class CacheLayer:
         if entry.ttl is None:
             return False
         elapsed = time.monotonic() - entry.created_at
-        if elapsed > entry.ttl:
+        if elapsed >= entry.ttl:
             return True
         return False
 
