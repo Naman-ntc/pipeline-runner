@@ -48,8 +48,8 @@ class MetricsCollector:
     def export(self) -> Dict[str, Dict[str, Any]]:
         """Export all collected metrics."""
         with self._lock:
-            # BUG: returns the internal dict directly — callers can mutate it
-            return self._metrics
+            # FIX: return a shallow copy so callers cannot mutate internal state
+            return dict(self._metrics)
 
     def reset(self) -> None:
         """Clear all collected metrics."""
