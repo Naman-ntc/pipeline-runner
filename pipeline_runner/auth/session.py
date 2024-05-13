@@ -32,7 +32,13 @@ class SessionStore:
         return session
 
     def get(self, session_id: str) -> Session | None:
-        return self._sessions.get(session_id)
+        session = self._sessions.get(session_id)
+        if session is None:
+            return None
+        if session.expires_at < time.time():
+            self._sessions.pop(session_id, None)
+            return None
+        return session
 
     def destroy(self, session_id: str) -> bool:
         return self._sessions.pop(session_id, None) is not None
