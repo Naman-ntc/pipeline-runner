@@ -12,9 +12,8 @@ class PaginationParams:
         self.offset = max(0, self.offset)
 
 
-def paginate(items: Any, limit: int = 20, offset: int = 0) -> list:
-    materialized = list(items)
-    return materialized[offset:offset + limit]
+def paginate(items: list, limit: int = 20, offset: int = 0) -> list:
+    return items[offset:offset + limit]
 
 
 def build_page_response(
