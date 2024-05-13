@@ -12,7 +12,7 @@ class RateLimiter:
         cutoff = now - self.window_seconds
         cleaned = []
         for ts in self._requests[key]:
-            if ts < cutoff:
+            if ts <= cutoff:
                 continue
             cleaned.append(ts)
         self._requests[key] = cleaned
