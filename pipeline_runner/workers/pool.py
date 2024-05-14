@@ -45,6 +45,11 @@ class WorkerPool:
         if len(self._workers) <= self.min_workers:
             logger.warning("At min capacity (%d), cannot scale down", self.min_workers)
             return
-        # BUG: logs the intent but never actually cancels any worker tasks.
         to_remove = min(count, len(self._workers) - self.min_workers)
-        logger.info("Scaling down by %d workers", to_remove)
+        removed = []
+        for _ in range(to_remove):
+            task = self._workers.pop()
+            task.cancel()
+            removed.append(task)
+        await asyncio.gather(*removed, return_exceptions=True)
+        logger.info("Scaled down by %d workers, pool size=%d", to_remove, len(self._workers))
