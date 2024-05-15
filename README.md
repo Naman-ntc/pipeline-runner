@@ -39,6 +39,26 @@ result = executor.run(pipeline, context={"env": "staging"})
 print(result.status, result.step_results)
 ```
 
+## CLI Usage
+
+Run a pipeline by name using the bundled CLI:
+
+```bash
+pipeline-runner run --pipeline deploy
+```
+
+Inspect merged configuration (defaults, env, and file overlays):
+
+```bash
+pipeline-runner config show
+```
+
+List pipelines discovered from the configured search paths:
+
+```bash
+pipeline-runner pipeline list
+```
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
