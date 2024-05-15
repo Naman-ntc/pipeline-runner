@@ -6,9 +6,25 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+EPILOG = """\
+available subcommands:
+  run       Run a named pipeline with optional config override
+  config    Show or validate the current configuration file
+  plugin    List or manage installed plugins
+
+examples:
+  pipeline run my_etl --config prod.yaml
+  pipeline config show
+"""
+
 
 def create_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="pipeline", description="Pipeline management CLI")
+    parser = argparse.ArgumentParser(
+        prog="pipeline",
+        description="Pipeline management CLI",
+        epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     subparsers = parser.add_subparsers(title="commands")
 
     run_parser = subparsers.add_parser("run", help="Run a pipeline")
