@@ -19,3 +19,4 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e ".[dev]"
       - run: pytest
+      - run: mypy pipeline_runner/
