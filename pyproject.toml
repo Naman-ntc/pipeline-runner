@@ -9,6 +9,9 @@ requires-python = ">=3.10"
 license = { text = "MIT" }
 description = "A lightweight CI pipeline execution engine."
 
+[project.optional-dependencies]
+dev = ["pytest", "mypy", "flake8"]
+
 [project.scripts]
 pipeline-runner = "pipeline_runner.cli:main"
 
