@@ -28,3 +28,9 @@ def sample_config():
         "max_workers": 4,
         "timeout_seconds": 300,
     }
+
+
+@pytest.fixture
+def sample_pipeline():
+    """Single-step pipeline definition for executor tests."""
+    return {"name": "test", "steps": [{"id": "s1", "command": "echo ok"}]}
