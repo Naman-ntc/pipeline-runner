@@ -34,3 +34,14 @@ def sample_config():
 def sample_pipeline():
     """Single-step pipeline definition for executor tests."""
     return {"name": "test", "steps": [{"id": "s1", "command": "echo ok"}]}
+
+
+@pytest.fixture
+def sample_step():
+    """One build step with timeout metadata."""
+    return {
+        "id": "build",
+        "name": "Build",
+        "command": "make build",
+        "timeout": 600,
+    }
