@@ -1,3 +1,5 @@
+[![CI](https://github.com/Naman-ntc/pipeline-runner/actions/workflows/ci.yml/badge.svg)](https://github.com/Naman-ntc/pipeline-runner/actions/workflows/ci.yml)
+
 # pipeline-runner
 
 A lightweight Python library and service for orchestrating CI-style pipelines: define a directed acyclic graph (DAG) of steps, run them with pluggable executors, and expose the same logic over HTTP or scheduled jobs.
@@ -58,6 +60,10 @@ List pipelines discovered from the configured search paths:
 ```bash
 pipeline-runner pipeline list
 ```
+
+## Contributing
+
+Bug reports, feature ideas, and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding conventions, and the review process.
 
 ## License
 
