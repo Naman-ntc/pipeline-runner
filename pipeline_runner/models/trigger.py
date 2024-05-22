@@ -1,6 +1,6 @@
 """Pipeline trigger model."""
-import time
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 
@@ -11,7 +11,9 @@ class Trigger:
     source: str
     event_type: str
     payload: Dict[str, Any] = field(default_factory=dict)
-    timestamp: float = field(default_factory=time.time)
+    timestamp: datetime = field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
     correlation_id: Optional[str] = None
 
     def matches(self, event_type: str, source: Optional[str] = None) -> bool:
@@ -24,7 +26,8 @@ class Trigger:
 
     def age_seconds(self) -> float:
         """Return the age of this trigger in seconds."""
-        return time.time() - self.timestamp
+        delta = datetime.now(timezone.utc) - self.timestamp
+        return delta.total_seconds()
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize trigger to dictionary."""
@@ -32,6 +35,6 @@ class Trigger:
             "source": self.source,
             "event_type": self.event_type,
             "payload": self.payload,
-            "timestamp": self.timestamp,
+            "timestamp": self.timestamp.isoformat(),
             "correlation_id": self.correlation_id,
         }
