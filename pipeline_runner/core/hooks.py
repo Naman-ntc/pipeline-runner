@@ -42,6 +42,7 @@ class HookManager:
     def cleanup(self, name: str) -> None:
         """Remove all callbacks for the given hook.
 
-        BUG: raises KeyError if the hook name was never registered.
+        Safe to call with unregistered names — silently does nothing.
         """
-        del self._hooks[name]
+        # FIX: use pop with a default instead of del to avoid KeyError
+        self._hooks.pop(name, None)
