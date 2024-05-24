@@ -23,10 +23,13 @@ class EventBus:
         self._subscribers[event_name].append(callback)
 
     def unsubscribe(self, event_name: str, callback: Callable) -> None:
-        """Remove a callback from the given event."""
-        # BUG: calls list.remove() without checking if callback is present,
-        # raises ValueError when the callback was never subscribed.
-        self._subscribers[event_name].remove(callback)
+        """Remove a callback from the given event.
+
+        Silently does nothing if the callback is not subscribed.
+        """
+        # FIX: guard against missing callback to avoid ValueError
+        if callback in self._subscribers.get(event_name, []):
+            self._subscribers[event_name].remove(callback)
 
     def publish(self, event_name: str, *args: Any, **kwargs: Any) -> None:
         """Publish an event, invoking all registered callbacks."""
