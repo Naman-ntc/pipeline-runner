@@ -8,9 +8,9 @@ def serialize_model(obj: Any) -> dict:
     for key, value in obj.__dict__.items():
         if key.startswith("_"):
             continue
-        try:
+        if value is not None and isinstance(value, datetime):
             result[key] = value.isoformat()
-        except AttributeError:
+        else:
             result[key] = value
     return result
 
