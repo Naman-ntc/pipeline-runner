@@ -31,18 +31,17 @@ class SchemaBuilder:
                 "version": self.version,
             },
         }
-        if self._endpoints:
-            paths: dict[str, Any] = {}
-            for ep in self._endpoints:
-                path = ep["path"]
-                if path not in paths:
-                    paths[path] = {}
-                operation: dict[str, Any] = {
-                    "summary": ep["summary"],
-                    "responses": ep["responses"],
-                }
-                if ep["requestBody"]:
-                    operation["requestBody"] = ep["requestBody"]
-                paths[path][ep["method"]] = operation
-            schema["paths"] = paths
+        paths: dict[str, Any] = {}
+        for ep in self._endpoints:
+            path = ep["path"]
+            if path not in paths:
+                paths[path] = {}
+            operation: dict[str, Any] = {
+                "summary": ep["summary"],
+                "responses": ep["responses"],
+            }
+            if ep["requestBody"]:
+                operation["requestBody"] = ep["requestBody"]
+            paths[path][ep["method"]] = operation
+        schema["paths"] = paths
         return schema
