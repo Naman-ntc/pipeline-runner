@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hashlib
-from typing import Optional
+from typing import Optional, Union
 
 from pipeline_runner.storage.base import StorageBackend
 
@@ -17,18 +17,22 @@ class BlobStore:
         self.backend = backend
         self.prefix = prefix
 
-    def compute_hash(self, data: bytes) -> str:
+    def compute_hash(self, data: Union[bytes, str]) -> str:
         """Return the hex digest for *data*."""
+        if isinstance(data, str):
+            data = data.encode()
         return hashlib.new(self.HASH_ALGO, data).hexdigest()
 
     def _blob_key(self, digest: str) -> str:
         return f"{self.prefix}/{digest[:2]}/{digest}"
 
-    def store_blob(self, data: bytes) -> str:
+    def store_blob(self, data: Union[bytes, str]) -> str:
         """Store *data* and return its content hash.
 
         If a blob with the same hash already exists the write is skipped.
         """
+        if isinstance(data, str):
+            data = data.encode()
         digest = self.compute_hash(data)
         key = self._blob_key(digest)
         if not self.backend.exists(key):
