@@ -2,6 +2,7 @@
 
 import logging
 import time
+from datetime import datetime, timezone
 from typing import Protocol
 
 logger = logging.getLogger(__name__)
@@ -28,9 +29,7 @@ class CleanupWorker:
         return summary
 
     def remove_expired(self) -> int:
-        # BUG: passes raw seconds since epoch as cutoff instead of computing
-        # the actual cutoff timestamp — effectively deletes nothing or everything.
-        cutoff = self.max_age_seconds
+        cutoff = time.time() - self.max_age_seconds
         runs = self.storage.list_runs()
         count = 0
         for run in runs:
