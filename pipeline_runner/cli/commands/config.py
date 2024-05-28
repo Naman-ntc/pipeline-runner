@@ -12,9 +12,7 @@ REQUIRED_KEYS = {"pipeline_name", "steps", "output_dir"}
 
 
 def show_config(args) -> None:
-    # BUG: hardcodes the config path instead of using args.config_path,
-    # so the --config flag is silently ignored.
-    config_path = Path("./config.yaml")
+    config_path = Path(args.config_path)
     if not config_path.exists():
         print(f"Config file not found: {config_path}", file=sys.stderr)
         sys.exit(1)
