@@ -24,7 +24,7 @@ class PermissionSet:
 
     def intersection(self, other: "PermissionSet") -> "PermissionSet":
         if not other._permissions:
-            return self
+            return PermissionSet()
         return PermissionSet(self._permissions & other._permissions)
 
     def union(self, other: "PermissionSet") -> "PermissionSet":
