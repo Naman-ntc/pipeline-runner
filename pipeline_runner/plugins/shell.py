@@ -21,12 +21,10 @@ class ShellPlugin(PluginBase):
 
     def run_command(self, cmd: list[str], cwd: str | None = None) -> int:
         logger.info("Running command: %s", " ".join(cmd))
-        # BUG: doesn't capture stderr — error output is lost and cannot
-        # be inspected by callers or logged on failure.
         result = subprocess.run(cmd, cwd=cwd, env=self._env,
-                                stdout=subprocess.PIPE, text=True)
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if result.returncode != 0:
-            logger.error("Command failed with exit code %d", result.returncode)
+            logger.error("Command failed (exit %d): %s", result.returncode, result.stderr)
         return result.returncode
 
     def capture_output(self, cmd: list[str], cwd: str | None = None) -> tuple[str, str, int]:
