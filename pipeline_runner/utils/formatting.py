@@ -36,4 +36,6 @@ def truncate_string(text: str, max_len: int = 80, suffix: str = "...") -> str:
     """Truncate a string to max_len, adding suffix if truncated."""
     if len(text) <= max_len:
         return text
+    if max_len <= len(suffix):
+        return suffix[:max_len]
     return text[: max_len - len(suffix)] + suffix
