@@ -14,10 +14,8 @@ class DockerPlugin(PluginBase):
         super().__init__()
         self._containers: list[str] = []
 
-    def build_image(self, tag: str, dockerfile: str = "Dockerfile") -> bool:
-        # BUG: missing context directory argument — docker build fails without
-        # knowing where to find the Dockerfile and build context.
-        cmd = ["docker", "build", "-t", tag, "-f", dockerfile]
+    def build_image(self, tag: str, dockerfile: str = "Dockerfile", context: str = ".") -> bool:
+        cmd = ["docker", "build", "-t", tag, "-f", dockerfile, context]
         logger.info("Building image: %s", " ".join(cmd))
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
@@ -44,7 +42,8 @@ class DockerPlugin(PluginBase):
     def execute(self, **kwargs) -> dict:
         action = kwargs.get("action", "build")
         if action == "build":
-            ok = self.build_image(kwargs["tag"], kwargs.get("dockerfile", "Dockerfile"))
+            ok = self.build_image(kwargs["tag"], kwargs.get("dockerfile", "Dockerfile"),
+                                  kwargs.get("context", "."))
             return {"success": ok}
         elif action == "run":
             cid = self.run_container(kwargs["image"], kwargs["name"], kwargs.get("env"))
