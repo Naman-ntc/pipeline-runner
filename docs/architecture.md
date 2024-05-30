@@ -1,19 +1,35 @@
 # pipeline-runner architecture
 
-This document describes how **pipeline-runner** is structured. The system is split into four main layers that communicate through well-defined interfaces.
+**pipeline-runner** is organized into layers and feature modules with clear boundaries.
 
 ## Core layer
 
-The **core** layer owns the execution model: pipelines, steps, scheduling, and the state machine that tracks each run. It does not know about HTTP or disk layout; it exposes hooks and events so upper layers can observe progress.
+The **core** layer owns pipelines, steps, scheduling, and the run state machine. It exposes hooks and events so other layers observe progress without coupling to HTTP or storage.
 
 ## API layer
 
-The **API** layer exposes pipeline operations over HTTP (REST). It maps requests to core commands, serializes responses, and enforces request validation. Long-running work is handed off to workers rather than blocking request threads.
+The **API** layer serves REST endpoints, maps requests to core operations, validates input, and defers long work to workers so request threads stay responsive.
 
 ## Workers layer
 
-The **workers** layer runs jobs asynchronously: pulling work from a queue, executing steps in isolated processes or containers, and reporting status back to core. Scaling is horizontal by adding worker processes.
+**Workers** dequeue jobs, run steps in isolated processes or containers, and report status to core. Add processes to scale horizontally.
 
 ## Storage layer
 
-The **storage** layer abstracts artifacts and metadata: local filesystem, object storage (e.g. S3-compatible), and small caches. Core and workers read/write through this layer so backends can be swapped without changing execution logic.
+**Storage** abstracts artifacts and metadata (filesystem, object stores, caches) so backends can change without touching execution logic.
+
+## Auth module
+
+**Auth** covers API tokens, service accounts, and scoped permissions. Middleware attaches identity before handlers run.
+
+## Notifications module
+
+**Notifications** delivers webhooks, email, and chat alerts on lifecycle events by subscribing to core events.
+
+## CLI module
+
+The **CLI** offers commands to submit runs, tail logs, and inspect status for local dev and ops without raw HTTP.
+
+## Plugins module
+
+**Plugins** loads custom step types and hooks via entry points and registers them like built-ins.
