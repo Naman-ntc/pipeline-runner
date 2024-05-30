@@ -1,7 +1,8 @@
 """Concurrency utilities for parallel task execution."""
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Callable, List, Sequence, TypeVar
+from typing import Any, Callable, List, Optional, Sequence, Type, TypeVar
+from types import TracebackType
 
 T = TypeVar("T")
 R = TypeVar("R")
@@ -35,5 +36,11 @@ class SemaphoreWrapper:
         self._sem.acquire()
         return self
 
-    def __exit__(self, *args) -> None:
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> bool:
         self._sem.release()
+        return False
