@@ -28,7 +28,7 @@ class HealthChecker:
             try:
                 if not check_fn():
                     failures.append(name)
-            except:
+            except Exception:
                 failures.append(f"{name} (error)")
 
         if not failures:
