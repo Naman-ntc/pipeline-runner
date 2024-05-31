@@ -2,8 +2,8 @@
 from __future__ import annotations
 
 
-def sanitize_input(value: str) -> str:
-    """Strip whitespace and truncate long input values."""
+def sanitize_value(value: str) -> str:
+    """Strip whitespace and truncate long values."""
     return (value or "").strip()[:4096]
 
 
