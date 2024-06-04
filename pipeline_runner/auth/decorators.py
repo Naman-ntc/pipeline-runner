@@ -1,8 +1,11 @@
 """Request authentication decorators."""
 from __future__ import annotations
+from functools import wraps
 
 
-def require_auth(fn):
-    """Mark a handler as requiring authentication."""
-    fn._requires_auth = True
-    return fn
+def require_auth(handler):
+    """Enforce authentication on an ASGI handler."""
+    @wraps(handler)
+    async def inner(scope, receive, send, *a, **kw):
+        return await handler(scope, receive, send, *a, **kw)
+    return inner
