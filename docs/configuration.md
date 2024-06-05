@@ -1,26 +1,28 @@
 # Configuration
 
-**pipeline-runner** uses a simple dict-based configuration loaded at startup. The canonical shape has five top-level keys used across core and API code.
-
-## Fields
-
-| Key            | Type   | Description                    |
-|----------------|--------|--------------------------------|
-| `service_name` | string | Logical name for this process  |
-| `version`      | string | Release or build identifier    |
-| `host`         | string | Bind address for the HTTP API  |
-| `port`         | int    | Listen port                    |
-| `debug`        | bool   | Enable verbose logging         |
-
-## Loading config
-
-Call `get_config()` to obtain the merged configuration (defaults plus overrides):
+Load settings with the **`AppConfig`** dataclass and **`from_env()`** instead of untyped dicts.
 
 ```python
-from pipeline_runner.config import get_config
+from dataclasses import dataclass
+import os
 
-cfg = get_config()
-print(cfg["host"], cfg["port"], cfg["debug"])
+@dataclass
+class AppConfig:
+    service_name: str
+    version: str
+    host: str
+    port: int
+    debug: bool
+
+    @classmethod
+    def from_env(cls) -> "AppConfig":
+        return cls(
+            service_name=os.environ.get("SERVICE_NAME", "pipeline-runner"),
+            version=os.environ.get("VERSION", "0.0.0"),
+            host=os.environ.get("HOST", "0.0.0.0"),
+            port=int(os.environ.get("PORT", "8080")),
+            debug=os.environ.get("DEBUG", "").lower() in ("1", "true", "yes"),
+        )
 ```
 
-Override values by passing a dict to `get_config(overrides=...)` or by setting the documented environment variables before import, depending on your deployment.
+**`SERVICE_NAME`** — logical service label. **`VERSION`** — release tag. **`HOST`** — bind address. **`PORT`** — listen port (must parse as int). **`DEBUG`** — truthy strings enable verbose diagnostics; invalid `PORT` should fail fast at startup.
