@@ -24,4 +24,5 @@ class AppConfig:
 
 
 def get_config() -> AppConfig:
+    """Load configuration from environment."""
     return AppConfig.from_env()
