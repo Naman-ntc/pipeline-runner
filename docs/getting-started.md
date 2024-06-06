@@ -1,6 +1,6 @@
 # Getting started with pipeline-runner
 
-Install **pipeline-runner** from PyPI using pip (Python 3.10+ recommended):
+Install with pip (Python 3.10+):
 
 ```bash
 pip install pipeline-runner
@@ -8,21 +8,26 @@ pip install pipeline-runner
 
 ## Minimal example
 
-Create a pipeline, add a step, and run it from Python:
-
 ```python
 from pipeline_runner import Pipeline, Step
 
 pipeline = Pipeline(name="demo")
 pipeline.add_step(Step("echo", command=["echo", "hello"]))
-
-result = pipeline.run()
-print(result.status, result.exit_code)
+print(pipeline.run().status)
 ```
 
-The `Pipeline` class schedules steps through the default executor; override `executor` if you need a custom backend.
+Override `executor` on `Pipeline` if you need a custom backend.
+
+## Configuration
+
+These environment variables affect the embedded HTTP service and logging:
+
+- **`SERVICE_NAME`** — e.g. `my-runner`; used in logs and metrics.
+- **`PORT`** — e.g. `8080`; REST listen port.
+- **`DEBUG`** — `true` / `1` for verbose output and stack traces.
+
+Example: `export SERVICE_NAME=batch-worker PORT=9000 DEBUG=0`.
 
 ## Next steps
 
-- Read the configuration guide for dict-based settings.
-- See the API reference for the HTTP status endpoint.
+Use the configuration guide for `AppConfig` and `from_env()`, and the API reference for submitting and querying runs.
