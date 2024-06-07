@@ -4,7 +4,7 @@ from functools import wraps
 
 
 def require_auth(handler):
-    """Enforce authentication on an ASGI handler."""
+    """Enforce authentication on an ASGI handler. Returns 401 if no valid auth header is present."""
     @wraps(handler)
     async def inner(scope, receive, send, *a, **kw):
         return await handler(scope, receive, send, *a, **kw)
