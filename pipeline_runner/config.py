@@ -9,4 +9,7 @@ def get_config() -> dict:
         "host": "0.0.0.0",
         "port": 8000,
         "debug": False,
+        "max_concurrent_runs": 10,
+        "run_timeout_seconds": 3600,
+        "cleanup_interval_seconds": 300,
     }
