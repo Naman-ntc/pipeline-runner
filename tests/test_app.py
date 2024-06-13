@@ -11,3 +11,7 @@ def test_app_is_callable():
 
 def test_app_is_async():
     assert asyncio.iscoroutinefunction(app)
+
+
+def test_app_handles_status():
+    assert hasattr(app, "__call__")
