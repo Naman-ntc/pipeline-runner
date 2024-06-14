@@ -38,3 +38,7 @@ def create_pipeline(name: str, config: dict) -> dict[str, Any]:
 
 def delete_pipeline(name: str) -> bool:
     return _PIPELINES.pop(name, None) is not None
+
+
+# Run listing
+_RUN_STORE: dict = {}
