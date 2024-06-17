@@ -1,27 +1,21 @@
 # HTTP API reference
 
-Base URL: `https://<host>:<port>`. All responses are JSON unless noted.
+Base: `https://<host>:<port>`. JSON responses.
 
 ## GET /api/status
 
-Returns whether the pipeline-runner service is up and which version it reports.
+Probe for load balancers. Example: `GET /api/status` → `200` with body like `{"ok":true,"service":"pipeline-runner","version":"1.2.3"}`.
 
-**Request**
+## POST /api/runs
 
-```http
-GET /api/status HTTP/1.1
-Host: localhost:8080
-Accept: application/json
-```
+Submit a run. Body: `{"pipeline":"deploy-app","parameters":{"env":"staging"}}`. Headers: `Content-Type: application/json`. Typical response: `202 Accepted` with `{"run_id":"run_01HQXYZ","status":"queued"}`.
 
-**Response** `200 OK`
+## GET /api/runs/:id
+
+Fetch one run. Example: `GET /api/runs/run_01HQXYZ` → `200` with:
 
 ```json
-{
-  "ok": true,
-  "service": "pipeline-runner",
-  "version": "1.2.3"
-}
+{"id":"run_01HQXYZ","status":"running","pipeline":"deploy-app","started_at":"2025-03-23T12:00:00Z"}
 ```
 
-Use this endpoint for load balancer health checks and deployment verification.
+Use `GET /api/status` after deploys; use `POST` / `GET` runs for orchestration workflows.
