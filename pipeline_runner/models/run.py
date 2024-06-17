@@ -34,3 +34,6 @@ class RunRequest:
             "parameters": self.parameters,
             "status": self.status.value,
         }
+
+    def __repr__(self) -> str:
+        return f"RunRequest(id={self.id!r}, pipeline={self.pipeline_name!r}, status={self.status.value!r})"
