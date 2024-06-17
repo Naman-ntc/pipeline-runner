@@ -1,6 +1,9 @@
-# Sample service config (commit 26)
+# Sample service config with runtime limits (commit 175, feat)
 service_name: api-gateway
 version: "1.2.0"
 host: "0.0.0.0"
 port: 8080
 debug: false
+max_concurrent_runs: 10
+run_timeout_seconds: 3600
+cleanup_interval_seconds: 300
