@@ -61,6 +61,17 @@ List pipelines discovered from the configured search paths:
 pipeline-runner pipeline list
 ```
 
+## Run Requests
+
+Programmatic runs use a structured request object that can be serialized for APIs and workers:
+
+```python
+from pipeline_runner.models.run import RunRequest
+
+req = RunRequest(pipeline_name='deploy', trigger='manual')
+payload = req.to_dict()
+```
+
 ## Contributing
 
 Bug reports, feature ideas, and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding conventions, and the review process.
