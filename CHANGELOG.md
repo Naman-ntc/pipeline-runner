@@ -1,10 +1,11 @@
 # Changelog
 
-## 0.1.0-dev
+## Unreleased
 
-- Initial project structure
-- Core execution engine
-- Storage backends
-- API layer
-- Worker system
-- Plugin system
+- Add RunRequest model
+- Add run request API endpoints
+- Add concurrency and timeout config
+
+## 0.1.0
+
+- Initial release
